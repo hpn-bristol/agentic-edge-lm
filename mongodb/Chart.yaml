@@ -1,0 +1,7 @@
+name: mongodb
+namespace: mongodb
+description: MongoDB
+version: 0.0.1
+apiVersion: v1
+keywords:
+  - mongodb

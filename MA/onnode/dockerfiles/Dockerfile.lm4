@@ -1,0 +1,19 @@
+FROM python:3.10
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
+    pip install --no-cache-dir kubernetes accelerate httpx diffusers transformers asyncio aiofiles requests &&\
+    pip install --no-cache-dir motor pandas fastapi pydantic uvicorn pymongo pillow
+
+COPY ../inference/inference_lm4.py /app/inference_lm4.py
+COPY ../inference/download_model_4.py /app/download_model_4.py
+
+RUN python /app/download_model_4.py
+
+# copy from the node or pod?
+# if node, means the generation is received on node,

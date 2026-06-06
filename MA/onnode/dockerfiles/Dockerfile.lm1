@@ -1,0 +1,21 @@
+FROM python:3.10
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
+    pip install --no-cache-dir kubernetes accelerate requests httpx asyncio aiofiles transformers && \
+    pip install --no-cache-dir motor pandas fastapi pydantic uvicorn pymongo pillow
+
+# Set the working directory
+WORKDIR /app
+
+# Copy scripts into the image
+COPY ../inference/inference_lm1.py /app/inference_lm1.py
+COPY ../inference/download_model_1.py /app/download_model_1.py
+
+# Run the Python script to download the model and save it
+RUN python /app/download_model_1.py

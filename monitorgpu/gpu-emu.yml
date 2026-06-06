@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: remaining-gpu
+  namespace: allworkers
+data:
+  worker1: "2"
+  worker2: "2"
+  worker3: "2"
+  worker4: "2"
+  worker5: "4"
+  worker6: "0"
+  worker7: "2"
+  worker8: "4"

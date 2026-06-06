@@ -1,0 +1,19 @@
+kubernetes
+pandas
+numpy
+pillow
+uvicorn
+fastapi
+pymongo
+pydantic
+requests
+netifaces
+scipy
+python-multipart
+httpx
+aiofiles
+motor
+openai
+# accelerate
+# torch 
+# these two are need when for LMs

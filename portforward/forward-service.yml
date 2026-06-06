@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: daemonset-service
+  namespace: allworkers
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - port: 30000  # The port of this service. Perform as a middle port that route between pod and node
+      targetPort: 30000  # The exposed port that runs on pod
+      nodePort: 30000  # The objective that outside should call: this one has to be within 30000-32767
+  selector:
+    app: sadrl # app is just a label name. as long as it math with the one we use in DaemonSet
+
+# logic is port -> nodeport -> podport

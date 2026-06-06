@@ -1,0 +1,50 @@
+# RKE cluster template. Replace addresses, users, and SSH key paths with your
+# own cluster information before running `rke up`.
+nodes:
+- address: <controller-ip>
+  port: "22"
+  internal_address: ""
+  role:
+  - controlplane
+  - worker
+  - etcd
+  hostname_override: controller
+  user: <ssh-user>
+  docker_socket: /var/run/docker.sock
+  ssh_key_path: <path-to-private-key>
+
+- address: <worker-1-ip>
+  port: "22"
+  internal_address: ""
+  role:
+  - worker
+  hostname_override: worker1
+  user: <ssh-user>
+  docker_socket: /var/run/docker.sock
+  ssh_key_path: <path-to-private-key>
+
+- address: <worker-2-ip>
+  port: "22"
+  internal_address: ""
+  role:
+  - worker
+  hostname_override: worker2
+  user: <ssh-user>
+  docker_socket: /var/run/docker.sock
+  ssh_key_path: <path-to-private-key>
+
+services:
+  kubelet:
+    extra_args:
+      cgroup-driver: systemd
+
+network:
+  plugin: canal
+
+authentication:
+  strategy: x509
+
+authorization:
+  mode: rbac
+
+ignore_docker_version: true

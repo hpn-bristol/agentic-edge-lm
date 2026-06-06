@@ -1,0 +1,54 @@
+{
+  "epoch_id": 2,
+  "LM_policies": {
+    "1": {
+      "<node-ip-1>": 0.5,
+      "<node-ip-2>": 0.5
+    },
+    "2": {
+      "<node-ip-1>": 0.5,
+      "<node-ip-2>": 0.5
+    },
+    "3": {
+      "<node-ip-3>": 0.5,
+      "<node-ip-5>": 0.5
+    },
+    "4": {
+      "<node-ip-4>": 0.5,
+      "<node-ip-5>": 0.5
+    }
+  },
+  "node_layout_intent": {
+    "worker1": {
+      "LMs": [
+        "1",
+        "2"
+      ]
+    },
+    "worker2": {
+      "LMs": [
+        "1",
+        "2"
+      ]
+    },
+    "worker3": {
+      "LMs": [
+        "3"
+      ]
+    },
+    "worker4": {
+      "LMs": [
+        "4"
+      ]
+    },
+    "worker5": {
+      "LMs": [
+        "3",
+        "4"
+      ]
+    },
+    "worker6": {
+      "LMs": []
+    }
+  }
+}

@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sadrl
+  namespace: allworkers
+spec:
+  selector:
+    matchLabels: # matchLabels is part of the Pod selector, it finds pod with 'metadata: labels: app: sadrl'
+      app: sadrl
+  template:
+    metadata:
+      labels:
+        app: sadrl # This is the label of the created pod
+    spec:
+      hostNetwork: true
+      dnsPolicy: Default
+      serviceAccountName: custom-sa
+      containers:
+      - name: sadrl # This name is just randomly choose, nothing related with the first two.
+        image: local/elm-sadrl:latest
+        # command: ["sleep", "infinity"]
+        imagePullPolicy: Always
+        command: ["python", "-m", "uvicorn", "sadrl.api:app", "--host", "0.0.0.0", "--port", "30000"]
+        volumeMounts:
+        - name: prompt-queue
+          mountPath: /app/prompt_queue 
+        - name: current-prompt
+          mountPath: /app/current_prompt
+        - name: output-local
+          mountPath: /app/output_local  
+        - name: output-relay
+          mountPath: /app/output_relay  
+        - name: results
+          mountPath: /app/results
+        - name: models
+          mountPath: /app/models
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LOCAL_GPT_DEBUG
+          value: "1"
+        - name: IMAGE_PREFIX
+          value: "local/elm"
+      imagePullSecrets:
+      - name: llm-docker
+      volumes:
+      - name: prompt-queue
+        hostPath:
+          path: /var/lib/ma-edge-llm/prompt_queue  # the path on the node
+          type: DirectoryOrCreate  # if doesn't exist, create
+      - name: current-prompt
+        hostPath:
+          path: /var/lib/ma-edge-llm/current_prompt 
+          type: DirectoryOrCreate  
+      - name: output-local
+        hostPath:
+          path: /var/lib/ma-edge-llm/output_local  
+          type: DirectoryOrCreate
+      - name: output-relay
+        hostPath:
+          path: /var/lib/ma-edge-llm/output_relay  
+          type: DirectoryOrCreate
+      - name: results
+        hostPath:
+          path: /var/lib/ma-edge-llm/results  
+          type: DirectoryOrCreate
+      - name: models
+        hostPath:
+          path: /var/lib/ma-edge-llm/models  
+          type: DirectoryOrCreate
+      nodeSelector:
+        dedicated: worker
+
+# kubectl label node <node-name> dedicated=workers
+
+# Label here is for the pod; Such as 'kubectl get pods -n mongodb --show-labels'
+# In contrast, we have label for the node as well. Such as 'kubectl get node worker1 --show-labels'
+
+# The matchLabels part in the selector is telling Kubernetes to select pods with a specific label (app: sadrl) and manage them under this deployment.
+# The labels part in the pod template is assigning the label (app: sadrl) to any new pod created by the deployment. This ensures that the pods match the deployment's selector criteria.

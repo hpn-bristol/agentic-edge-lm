@@ -1,0 +1,19 @@
+FROM python:3.10
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y curl python-is-python3 python3-pip
+
+WORKDIR /app/
+
+COPY ../dockerfiles/requirements.txt /app/requirements.txt
+RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
+
+COPY ../sadrl /app/sadrl
+# RUN python /app/sadrl/api.py 
+# This is just for test use. Remember to comment it after test 
+
+CMD ["python", "-m", "uvicorn", "sadrl.api:app", "--host", "0.0.0.0", "--port", "30000"]
+
+
+
+
